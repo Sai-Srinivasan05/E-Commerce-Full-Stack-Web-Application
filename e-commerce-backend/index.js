@@ -201,7 +201,12 @@ app.post("/getcart", fetchuser, async (req, res) => {
   let userData = await Users.findOne({ _id: req.user.id });
   res.json(userData.cartData);
 });
-app.post("/addproduct", async (req, res) => {
+const addProductLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 5, // limit each IP to 5 requests per windowMs
+});
+
+app.post("/addproduct", addProductLimiter, async (req, res) => {
   let products = await Product.find({});
   let id;
   if (products.length > 0) {
