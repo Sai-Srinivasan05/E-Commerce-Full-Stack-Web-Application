@@ -4,7 +4,14 @@ import upload_area from "../Assets/upload_area.svg";
 
 const AddProduct = () => {
 
-  const[image,setImage] = useState(false);
+  const [image, setImage] = useState(false);
+  React.useEffect(() => {
+    return () => {
+     if (image && image !== upload_area) {
+       URL.revokeObjectURL(image); // Cleanup blob URL
+     }
+   };
+  }, [image]);
   const [productDetails,setProductDetails] = useState({
       name:"",
       image:"",
@@ -55,10 +62,11 @@ const AddProduct = () => {
 
   const imageHandler = (e) => {
     const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      setImage(file);
+    if (file && file.type.startsWith("image/") && file.size <= 5 * 1024 * 1024) { // Limit size to 5MB
+      const blobUrl = URL.createObjectURL(file);
+      setImage(blobUrl);
     } else {
-      alert("Invalid file type. Please upload an image.");
+      alert("Invalid file. Please upload an image file under 5MB.");
       setImage(false);
     }
   }
@@ -90,7 +98,7 @@ const AddProduct = () => {
       <div className="addproduct-itemfield">
         <p>Product title</p>
         <label for="file-input">
-          <img className="addproduct-thumbnail-img" src={!image?upload_area:URL.createObjectURL(image)} alt="" />
+          <img className="addproduct-thumbnail-img" src={!image ? upload_area : image} alt="Product Thumbnail" />
         </label>
         <input onChange={(e)=>{imageHandler(e)}} type="file" name="image" id="file-input" hidden />
       </div>
