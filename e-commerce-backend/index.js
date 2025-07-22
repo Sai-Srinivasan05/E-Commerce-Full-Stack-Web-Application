@@ -196,7 +196,12 @@ app.post("/removefromcart", fetchuser, async (req, res) => {
   );
   res.send("Removed");
 });
-app.post("/getcart", fetchuser, async (req, res) => {
+const getCartLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 10, // limit each IP to 10 requests per windowMs
+});
+
+app.post("/getcart", getCartLimiter, fetchuser, async (req, res) => {
   console.log("Get Cart");
   let userData = await Users.findOne({ _id: req.user.id });
   res.json(userData.cartData);
