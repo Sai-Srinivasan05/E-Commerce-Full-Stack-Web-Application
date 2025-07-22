@@ -1,5 +1,6 @@
 const port = 4000;
 const express = require("express");
+const rateLimit = require("express-rate-limit");
 const app = express();
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
@@ -223,7 +224,12 @@ app.post("/addproduct", async (req, res) => {
   console.log("Saved");
   res.json({ success: true, name: req.body.name });
 });
-app.post("/removeproduct", async (req, res) => {
+const removeProductLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 10, // limit each IP to 10 requests per windowMs
+});
+
+app.post("/removeproduct", removeProductLimiter, async (req, res) => {
   const product = await Product.findOneAndDelete({ id: req.body.id });
   console.log("Removed");
   res.json({ success: true, name: req.body.name });
