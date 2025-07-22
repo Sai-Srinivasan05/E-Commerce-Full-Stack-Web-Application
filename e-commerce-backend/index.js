@@ -10,7 +10,7 @@ const cors = require("cors");
 app.use(express.json());
 app.use(cors());
 mongoose.connect(
-  "mongodb+srv://umavlr2473:Bhairav2020@cluster0.oij5h6b.mongodb.net//e-commerce"
+  // Enter your mongoID
 );
 const storage = multer.diskStorage({
   destination: "./upload/images",
