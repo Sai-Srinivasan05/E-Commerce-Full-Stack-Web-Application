@@ -157,7 +157,12 @@ app.post("/signup", async (req, res) => {
   success = true;
   res.json({ success, token });
 });
-app.get("/allproducts", async (req, res) => {
+const allProductsLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 20, // limit each IP to 20 requests per windowMs
+});
+
+app.get("/allproducts", allProductsLimiter, async (req, res) => {
   let products = await Product.find({});
   console.log("All Products");
   res.send(products);
