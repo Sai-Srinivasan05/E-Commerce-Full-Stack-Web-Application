@@ -54,8 +54,14 @@ const AddProduct = () => {
     }
 
   const imageHandler = (e) => {
-    setImage(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      setImage(file);
+    } else {
+      alert("Invalid file type. Please upload an image.");
+      setImage(false);
     }
+  }
 
   return (
     <div className="addproduct">
