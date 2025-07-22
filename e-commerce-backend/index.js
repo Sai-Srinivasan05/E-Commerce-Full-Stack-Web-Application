@@ -184,7 +184,12 @@ app.post("/addtocart", fetchuser, async (req, res) => {
   );
   res.send("Added");
 });
-app.post("/removefromcart", fetchuser, async (req, res) => {
+const removeFromCartLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 10, // limit each IP to 10 requests per windowMs
+});
+
+app.post("/removefromcart", removeFromCartLimiter, fetchuser, async (req, res) => {
   console.log("Remove Cart");
   let userData = await Users.findOne({ _id: req.user.id });
   if (userData.cartData[req.body.itemId] != 0) {
