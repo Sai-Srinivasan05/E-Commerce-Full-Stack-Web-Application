@@ -106,7 +106,10 @@ const loginLimiter = rateLimit({
 app.post("/login", loginLimiter, async (req, res) => {
   console.log("Login");
   let success = false;
-  let user = await Users.findOne({ email: req.body.email });
+  if (typeof req.body.email !== "string") {
+    return res.status(400).json({ success: false, errors: "Invalid email format" });
+  }
+  let user = await Users.findOne({ email: { $eq: req.body.email } });
   if (user) {
     const passCompare = req.body.password === user.password;
     if (passCompare) {
