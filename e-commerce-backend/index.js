@@ -10,7 +10,7 @@ const cors = require("cors");
 app.use(express.json());
 app.use(cors());
 mongoose.connect(
-  // Enter your mongoID
+  // MongoDB Atlas Database URI with credentials
 );
 const storage = multer.diskStorage({
   destination: "./upload/images",
