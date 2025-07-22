@@ -173,7 +173,12 @@ app.get("/newcollections", newCollectionsLimiter, async (req, res) => {
   console.log("New Collections");
   res.send(arr);
 });
-app.get("/popularinwomen", async (req, res) => {
+const popularInWomenLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 20, // limit each IP to 20 requests per windowMs
+});
+
+app.get("/popularinwomen", popularInWomenLimiter, async (req, res) => {
   let products = await Product.find({});
   let arr = products.splice(0, 4);
   console.log("Popular In Women");
