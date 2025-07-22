@@ -275,7 +275,7 @@ const removeProductLimiter = rateLimit({
 });
 
 app.post("/removeproduct", removeProductLimiter, async (req, res) => {
-  const product = await Product.findOneAndDelete({ id: req.body.id });
+  const product = await Product.findOneAndDelete({ id: { $eq: req.body.id } });
   console.log("Removed");
   res.json({ success: true, name: req.body.name });
 });
