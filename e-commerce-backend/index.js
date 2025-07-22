@@ -174,7 +174,12 @@ app.get("/popularinwomen", async (req, res) => {
   console.log("Popular In Women");
   res.send(arr);
 });
-app.post("/addtocart", fetchuser, async (req, res) => {
+const addToCartLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 10, // limit each IP to 10 requests per windowMs
+});
+
+app.post("/addtocart", addToCartLimiter, fetchuser, async (req, res) => {
   console.log("Add Cart");
   let userData = await Users.findOne({ _id: req.user.id });
   userData.cartData[req.body.itemId] += 1;
