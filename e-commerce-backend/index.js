@@ -162,7 +162,12 @@ app.get("/allproducts", async (req, res) => {
   console.log("All Products");
   res.send(products);
 });
-app.get("/newcollections", async (req, res) => {
+const newCollectionsLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 20, // limit each IP to 20 requests per windowMs
+});
+
+app.get("/newcollections", newCollectionsLimiter, async (req, res) => {
   let products = await Product.find({});
   let arr = products.slice(1).slice(-8);
   console.log("New Collections");
