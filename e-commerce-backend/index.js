@@ -98,7 +98,12 @@ const Product = mongoose.model("Product", {
 app.get("/", (req, res) => {
   res.send("Root");
 });
-app.post("/login", async (req, res) => {
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 requests per windowMs
+});
+
+app.post("/login", loginLimiter, async (req, res) => {
   console.log("Login");
   let success = false;
   let user = await Users.findOne({ email: req.body.email });
