@@ -143,7 +143,7 @@ const signupLimiter = rateLimit({
 app.post("/signup", signupLimiter, async (req, res) => {
   console.log("Sign Up");
   let success = false;
-  let check = await Users.findOne({ email: req.body.email });
+  let check = await Users.findOne({ email: { $eq: req.body.email } });
   if (check) {
     return res.status(400).json({
       success: success,
