@@ -127,7 +127,12 @@ app.post("/login", async (req, res) => {
     });
   }
 });
-app.post("/signup", async (req, res) => {
+const signupLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // limit each IP to 5 requests per windowMs
+});
+
+app.post("/signup", signupLimiter, async (req, res) => {
   console.log("Sign Up");
   let success = false;
   let check = await Users.findOne({ email: req.body.email });
