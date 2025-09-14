@@ -1,59 +1,90 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./CSS/LoginSignup.css";
+// import { animate } from 'animejs';
 
 const LoginSignup = () => {
 
   const [state,setState] = useState("Login");
   const [formData,setFormData] = useState({username:"",email:"",password:""});
 
+  useEffect(() => {
+    // Animations temporarily disabled for compatibility
+    // animate({ targets: '.loginsignup-container', translateY: [50, 0], opacity: [0, 1], duration: 800 });
+    // animate({ targets: '.loginsignup-fields input', translateY: [30, 0], opacity: [0, 1], duration: 600, delay: 100 });
+  }, []);
+
   const changeHandler = (e) => {
     setFormData({...formData,[e.target.name]:e.target.value});
     }
 
   const login = async () => {
+    console.log('Login attempt with:', formData);
     let dataObj;
-    await fetch('http://localhost:4000/login', {
-      method: 'POST',
-      headers: {
-        Accept:'application/form-data',
-        'Content-Type':'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((resp) => resp.json())
-      .then((data) => {dataObj=data});
-      console.log(dataObj);
-      if (dataObj.success) {
-        localStorage.setItem('auth-token',dataObj.token);
-        window.location.replace("/");
-      }
-      else
-      {
-        alert(dataObj.errors)
-      }
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+    
+    try {
+      await fetch(`${apiUrl}/login`, {
+        method: 'POST',
+        headers: {
+          Accept:'application/json',
+          'Content-Type':'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+        .then((resp) => resp.json())
+        .then((data) => {dataObj=data});
+        
+        console.log('Login response:', dataObj);
+        if (dataObj.success) {
+          localStorage.setItem('auth-token',dataObj.token);
+          // Success - redirect immediately
+          setTimeout(() => window.location.replace("/"), 300);
+        }
+        else {
+          alert(dataObj.errors);
+        }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('Login failed. Please try again.');
+    }
   }
 
   const signup = async () => {
+    console.log('Signup attempt with:', formData);
     let dataObj;
-    await fetch('http://localhost:4000/signup', {
-      method: 'POST',
-      headers: {
-        Accept:'application/form-data',
-        'Content-Type':'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((resp) => resp.json())
-      .then((data) => {dataObj=data});
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+    
+    // Validation
+    if (!formData.username || !formData.email || !formData.password) {
+      alert('Please fill in all fields');
+      return;
+    }
+    
+    try {
+      await fetch(`${apiUrl}/signup`, {
+        method: 'POST',
+        headers: {
+          Accept:'application/json',
+          'Content-Type':'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+        .then((resp) => resp.json())
+        .then((data) => {dataObj=data});
 
-      if (dataObj.success) {
-        localStorage.setItem('auth-token',dataObj.token);
-        window.location.replace("/");
-      }
-      else
-      {
-        alert(dataObj.errors)
-      }
+        console.log('Signup response:', dataObj);
+        if (dataObj.success) {
+          localStorage.setItem('auth-token',dataObj.token);
+          // Success - redirect immediately
+          setTimeout(() => window.location.replace("/"), 300);
+        }
+        else {
+          alert(dataObj.errors);
+        }
+    } catch (error) {
+      console.error('Signup error:', error);
+      alert('Signup failed. Please try again.');
+    }
   }
 
   return (
