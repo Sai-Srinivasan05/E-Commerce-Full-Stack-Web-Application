@@ -1,0 +1,31 @@
+{
+  "name": "mern-ecommerce",
+  "version": "1.0.0",
+  "description": "A full-stack MERN e-commerce application with admin panel",
+  "main": "index.js",
+  "scripts": {
+    "setup": "node setup.js",
+    "install-all": "npm install && cd e-commerce-backend && npm install && cd ../e-commerce-frontend && npm install && cd ../e-commerce-admin && npm install",
+    "start-backend": "cd e-commerce-backend && npm start",
+    "start-frontend": "cd e-commerce-frontend && npm start",
+    "start-admin": "cd e-commerce-admin && npm start",
+    "dev-backend": "cd e-commerce-backend && npm run dev",
+    "dev": "concurrently \"npm run start-backend\" \"npm run start-frontend\" \"npm run start-admin\"",
+    "build-frontend": "cd e-commerce-frontend && npm run build",
+    "build-admin": "cd e-commerce-admin && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ecommerce",
+    "mern",
+    "react",
+    "nodejs",
+    "mongodb",
+    "express"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
